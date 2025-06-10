@@ -15,12 +15,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import TextComponent from '@components/TextComponent';
 import CoffeeData from '../../data/CoffeeData';
 import CardComponent from '@components/CardComponent';
-import { CoffeeItem } from 'types/Coffee';
-
+import {CoffeeItem} from 'types/Coffee';
+import BeansData from '@data/BeansData';
 const index = () => {
   const [category, setCategory] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>('Americano');
   const [filteredData, setFilteredData] = useState<CoffeeItem[] | null>([]);
+  const [beansData, setBeansData] = useState<CoffeeItem[]>([]);
   const scrollViewRef = useRef<ScrollView>(null);
 
   function handleFilterData() {
@@ -29,16 +30,14 @@ const index = () => {
   function getAllCategory() {
     return CoffeeData.map(data => data.name);
   }
-  
+
   useEffect(() => {
     let data = CoffeeData;
 
-    if(activeFilter == "All")
-    {
-      data=CoffeeData.filter(data => data);
-    }
-    else {
-      data= CoffeeData.filter(data => data.name === activeFilter);
+    if (activeFilter == 'All') {
+      data = CoffeeData.filter(data => data);
+    } else {
+      data = CoffeeData.filter(data => data.name === activeFilter);
     }
     setFilteredData(data);
   }, [activeFilter]);
@@ -51,8 +50,9 @@ const index = () => {
       },
       ['All'],
     );
-    
-    setFilteredData(CoffeeData)
+
+    setFilteredData(CoffeeData);
+    setBeansData(BeansData);
     setCategory(unique);
   }, []);
 
@@ -77,7 +77,8 @@ const index = () => {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{flex: 1, padding: 16}}>
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{flexGrow: 1, padding: 16}}>
       <StatusBar
         backgroundColor={COLORS.primaryBlackHex}
         barStyle="light-content"
@@ -145,6 +146,18 @@ const index = () => {
         contentContainerStyle={{gap: 10}}
         horizontal={true}>
         {filteredData?.map(item => (
+          <CardComponent data={item} />
+        ))}
+      </ScrollView>
+      <View style={{marginVertical: 20}}>
+        <TextComponent style={{color: '#fff', fontSize: FONTSIZE.size_18}}>
+          Coffee Beans
+        </TextComponent>
+      </View>
+      <ScrollView horizontal={true}
+        contentContainerStyle={{gap:10}}
+      >
+        {beansData.map(item => (
           <CardComponent data={item} />
         ))}
       </ScrollView>
